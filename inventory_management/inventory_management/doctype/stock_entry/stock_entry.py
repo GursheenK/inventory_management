@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
 
 
@@ -21,23 +22,23 @@ class StockEntry(Document):
 
     def validate_src_warehouse(self, entry_item):
         if not entry_item.from_warehouse:
-            frappe.throw("Source Warehouse must be set.")
+            frappe.throw(_("Source Warehouse must be set."))
 
     def validate_dest_warehouse(self, entry_item):
         if not entry_item.to_warehouse:
-            frappe.throw("Destination Warehouse must be set.")
+            frappe.throw(_("Destination Warehouse must be set."))
 
     def validate_value(self, entry_item):
         if not entry_item.value:
-            frappe.throw("Value of Item must be set.")
+            frappe.throw(_("Value of Item must be set."))
 
     def validate_available_quantity(self, entry_item):
         available_qty = frappe.db.sql(
-            f"SELECT sum(qty_change) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item} and from_warehouse='{entry_item.from_warehouse}''"
+            f"SELECT sum(qty_change) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item}' AND (from_warehouse='{entry_item.from_warehouse}' OR to_warehouse='{entry_item.from_warehouse}')"
         )
-        if available_qty[0][0] < entry_item.quantity:
+        if available_qty[0][0] and available_qty[0][0]< entry_item.quantity:
             frappe.throw(
-                f"Quantity exceeds number of units available for {entry_item.item} in the inventory."
+                _(f"Quantity exceeds number of units available for {entry_item.item} in the inventory.")
             )
 
     def on_submit(self):
@@ -55,20 +56,20 @@ class StockEntry(Document):
     def set_sle_params(self, sle, entry_item):
         sle.from_warehouse = entry_item.from_warehouse
         sle.to_warehouse = entry_item.to_warehouse
-        sle.qty_change = entry_item.quantity
+        sle.qty_change = entry_item.quantity if self.entry_type == 'Receive' else -(entry_item.quantity)
         self.set_item_details(sle, entry_item)
 
     def set_sle_params_on_cancel(self, sle, entry_item):
         sle.from_warehouse = entry_item.to_warehouse
         sle.to_warehouse = entry_item.from_warehouse
-        sle.qty_change = -(entry_item.quantity)
+        sle.qty_change = -(entry_item.quantity) if self.entry_type == 'Receive' else entry_item.quantity
         self.set_item_details(sle, entry_item)
 
     def set_item_details(self, sle, entry_item):
         sle.item = entry_item.item
-        sle.date = self.entry_date
-        sle.time = self.entry_time
-        if entry_item.entry_type is not 'Receive':
+        sle.entry_date = self.entry_date
+        sle.entry_time = self.entry_time
+        if self.entry_type != 'Receive':
             sle.cost = self.calculate_moving_average(entry_item)
         else:
             sle.cost = entry_item.value

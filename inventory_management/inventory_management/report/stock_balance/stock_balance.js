@@ -3,7 +3,6 @@
 /* eslint-disable */
 
 frappe.query_reports["Stock Balance"] = {
-	"filters": [
-
+	"filters": [	
 	]
 };

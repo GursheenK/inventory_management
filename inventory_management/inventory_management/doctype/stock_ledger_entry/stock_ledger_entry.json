@@ -10,9 +10,9 @@
   "item",
   "qty_change",
   "cost",
-  "date",
+  "entry_date",
   "column_break_4qvf",
-  "time",
+  "entry_time",
   "from_warehouse",
   "to_warehouse"
  ],
@@ -22,16 +22,6 @@
    "fieldtype": "Link",
    "label": "Item ",
    "options": "Item"
-  },
-  {
-   "fieldname": "date",
-   "fieldtype": "Date",
-   "label": "Date"
-  },
-  {
-   "fieldname": "time",
-   "fieldtype": "Time",
-   "label": "Time"
   },
   {
    "fieldname": "qty_change",
@@ -58,12 +48,22 @@
   {
    "fieldname": "column_break_4qvf",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "entry_date",
+   "fieldtype": "Date",
+   "label": "Entry Date"
+  },
+  {
+   "fieldname": "entry_time",
+   "fieldtype": "Time",
+   "label": "Entry Time"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-11 09:15:35.016526",
+ "modified": "2023-05-11 11:26:36.569602",
  "modified_by": "Administrator",
  "module": "Inventory Management",
  "name": "Stock Ledger Entry",
