@@ -20,7 +20,7 @@ class StockEntry(Document):
                 self.validate_available_quantity(entry_item)
 
     def validate_src_warehouse(self, entry_item):
-        if entry_item.from_warehouse == None:
+        if not entry_item.from_warehouse:
             frappe.throw("Source Warehouse must be set.")
 
     def validate_dest_warehouse(self, entry_item):
@@ -28,12 +28,12 @@ class StockEntry(Document):
             frappe.throw("Destination Warehouse must be set.")
 
     def validate_value(self, entry_item):
-        if entry_item.value == None:
+        if not entry_item.value:
             frappe.throw("Value of Item must be set.")
 
     def validate_available_quantity(self, entry_item):
         available_qty = frappe.db.sql(
-            f"SELECT sum(qty_change) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item}'"
+            f"SELECT sum(qty_change) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item} and from_warehouse='{entry_item.from_warehouse}''"
         )
         if available_qty[0][0] < entry_item.quantity:
             frappe.throw(
@@ -45,27 +45,20 @@ class StockEntry(Document):
             sle = frappe.new_doc("Stock Ledger Entry")
             self.set_sle_params(sle, entry_item)
             sle.insert()
-            self.calculate_moving_average(entry_item)
 
     def on_cancel(self):
         for entry_item in self.items:
             sle = frappe.new_doc("Stock Ledger Entry")
             self.set_sle_params_on_cancel(sle, entry_item)
             sle.insert()
-            self.calculate_moving_average(entry_item)
 
     def set_sle_params(self, sle, entry_item):
-        sle.entry_type = self.entry_type
         sle.from_warehouse = entry_item.from_warehouse
         sle.to_warehouse = entry_item.to_warehouse
         sle.qty_change = entry_item.quantity
         self.set_item_details(sle, entry_item)
 
     def set_sle_params_on_cancel(self, sle, entry_item):
-        if self.entry_type == "Receive":
-            sle.entry_type = "Consume"
-        elif self.entry_type == "Consume":
-            sle.entry_type = "Receive"
         sle.from_warehouse = entry_item.to_warehouse
         sle.to_warehouse = entry_item.from_warehouse
         sle.qty_change = -(entry_item.quantity)
@@ -75,12 +68,13 @@ class StockEntry(Document):
         sle.item = entry_item.item
         sle.date = self.entry_date
         sle.time = self.entry_time
-        sle.cost = entry_item.value
+        if entry_item.entry_type is not 'Receive':
+            sle.cost = self.calculate_moving_average(entry_item)
+        else:
+            sle.cost = entry_item.value
 
     def calculate_moving_average(self, entry_item):
         moving_avg_rate = frappe.db.sql(
             f"SELECT sum(qty_change*cost)/sum(qty_change) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item}'"
         )
-        sle = frappe.get_last_doc("Stock Ledger Entry")
-        sle.valuation_rate = moving_avg_rate[0][0]
-        sle.save()
+        return moving_avg_rate[0][0]

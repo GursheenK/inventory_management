@@ -7,16 +7,14 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "entry_type",
   "item",
   "qty_change",
   "cost",
-  "valuation_rate",
-  "column_break_4qvf",
-  "from_warehouse",
-  "to_warehouse",
   "date",
-  "time"
+  "column_break_4qvf",
+  "time",
+  "from_warehouse",
+  "to_warehouse"
  ],
  "fields": [
   {
@@ -53,20 +51,9 @@
    "options": "Warehouse"
   },
   {
-   "fieldname": "entry_type",
-   "fieldtype": "Select",
-   "label": "Entry Type",
-   "options": "Receive\nConsume\nTransfer"
-  },
-  {
    "fieldname": "cost",
    "fieldtype": "Float",
    "label": "Cost"
-  },
-  {
-   "fieldname": "valuation_rate",
-   "fieldtype": "Float",
-   "label": "Valuation Rate"
   },
   {
    "fieldname": "column_break_4qvf",
@@ -76,7 +63,7 @@
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-11 08:43:19.407170",
+ "modified": "2023-05-11 09:15:35.016526",
  "modified_by": "Administrator",
  "module": "Inventory Management",
  "name": "Stock Ledger Entry",
