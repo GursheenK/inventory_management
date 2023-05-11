@@ -13,10 +13,10 @@
   "contact",
   "column_break_cqpq",
   "parent_warehouse",
-  "lft",
-  "rgt",
   "old_parent",
-  "is_group"
+  "is_group",
+  "lft",
+  "rgt"
  ],
  "fields": [
   {
@@ -80,9 +80,9 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2023-05-09 12:41:13.052408",
+ "modified": "2023-05-11 08:46:47.876774",
  "modified_by": "Administrator",
- "module": "Inventory Management New",
+ "module": "Inventory Management",
  "name": "Warehouse",
  "naming_rule": "Expression (old style)",
  "nsm_parent_field": "parent_warehouse",

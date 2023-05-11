@@ -4,6 +4,11 @@
 
 frappe.query_reports["Test Report"] = {
 	"filters": [
-		
+		{
+			"fieldname":"type",
+			"label": __("Entry Type"),
+			"fieldtype": "Select",
+			"options": ["Receive", "Consume", "Transfer"]
+		}
 	]
 };

@@ -1,75 +1,75 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "ITEM-.#####",
- "creation": "2023-05-08 11:31:44.889288",
+ "autoname": "Entry-.#####",
+ "creation": "2023-05-10 16:14:08.858793",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "item_name",
-  "column_break_lqal",
-  "brand",
-  "image",
-  "section_break_kos6",
-  "item_code",
-  "column_break_jmd3",
-  "description"
+  "entry_type",
+  "entry_date",
+  "column_break_wvac",
+  "entry_time",
+  "section_break_vpzt",
+  "items",
+  "amended_from"
  ],
  "fields": [
   {
-   "fieldname": "item_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Item Name",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_lqal",
+   "fieldname": "column_break_wvac",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "brand",
-   "fieldtype": "Data",
-   "label": "Brand",
+   "fieldname": "entry_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Entry Date",
    "reqd": 1
   },
   {
-   "fieldname": "image",
-   "fieldtype": "Attach Image",
-   "hidden": 1,
-   "label": "Image"
+   "fieldname": "entry_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Entry Time",
+   "reqd": 1
   },
   {
-   "fieldname": "section_break_kos6",
+   "fieldname": "section_break_vpzt",
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "item_code",
-   "fieldtype": "Data",
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Stock Entry Item"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Stock Entry",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "entry_type",
+   "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Item Code",
-   "reqd": 1,
-   "unique": 1
-  },
-  {
-   "fieldname": "column_break_jmd3",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "description",
-   "fieldtype": "Data",
-   "label": "Description"
+   "label": "Entry Type",
+   "options": "Receive\nConsume\nTransfer",
+   "reqd": 1
   }
  ],
- "image_field": "image",
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2023-05-09 12:39:57.938825",
+ "modified": "2023-05-11 08:44:35.262386",
  "modified_by": "Administrator",
- "module": "Inventory Management New",
- "name": "Item",
+ "module": "Inventory Management",
+ "name": "Stock Entry",
  "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
@@ -119,10 +119,7 @@
    "share": 1
   }
  ],
- "quick_entry": 1,
- "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "title_field": "item_name"
+ "states": []
 }
