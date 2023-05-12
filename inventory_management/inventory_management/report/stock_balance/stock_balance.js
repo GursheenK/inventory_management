@@ -3,6 +3,12 @@
 /* eslint-disable */
 
 frappe.query_reports["Stock Balance"] = {
-	"filters": [	
+	"filters": [
+		{
+			"fieldname":"reqd_warehouse",
+			"label": __("Warehouse"),
+			"fieldtype": "Link",
+			"options": "Warehouse"
+		}	
 	]
 };

@@ -34,7 +34,7 @@ class StockEntry(Document):
 
     def validate_available_quantity(self, entry_item):
         available_qty = frappe.db.sql(
-            f"SELECT sum(qty_change) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item}' AND warehouse='{entry_item.from_warehouse}'"
+            f"SELECT IFNULL(SUM(qty_change), 0) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item}' AND warehouse='{entry_item.from_warehouse}'"
         )
         if available_qty[0][0]< entry_item.quantity:
             frappe.throw(
@@ -90,6 +90,6 @@ class StockEntry(Document):
 
     def calculate_moving_average(self, entry_item):
         moving_avg_rate = frappe.db.sql(
-            f"SELECT sum(qty_change*cost)/sum(qty_change) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item}'"
+            f"SELECT IFNULL(SUM(qty_change*cost)/sum(qty_change), 0) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item}'"
         )
         return moving_avg_rate[0][0]
