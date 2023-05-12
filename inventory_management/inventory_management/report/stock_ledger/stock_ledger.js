@@ -2,14 +2,13 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
-frappe.query_reports["Stock Ledger Report"] = {
+frappe.query_reports["Stock Ledger"] = {
 	"filters": [
 		{
 			"fieldname":"item",
 			"label": __("Item"),
 			"fieldtype": "Link",
-			"options": "Item",
-			reqd: 1
+			"options": "Item"
 		},
 		{
 			"fieldname":"entry_date",
@@ -17,16 +16,10 @@ frappe.query_reports["Stock Ledger Report"] = {
 			"fieldtype": "Date"
 		},
 		{
-			"fieldname":"from_warehouse",
-			"label": __("From Warehouse"),
+			"fieldname":"warehouse",
+			"label": __("Warehouse"),
 			"fieldtype": "Link",
 			"options": "Warehouse"
-		},
-		{
-			"fieldname":"to_warehouse",
-			"label": __("To Warehouse"),
-			"fieldtype": "Link",
-			"options": "Warehouse"
-		},
+		}
 	]
 };

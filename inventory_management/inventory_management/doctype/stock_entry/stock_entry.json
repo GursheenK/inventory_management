@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "Entry-.#####",
+ "autoname": "entry-.#####",
  "creation": "2023-05-10 16:14:08.858793",
  "default_view": "List",
  "doctype": "DocType",
@@ -66,7 +66,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-11 11:30:26.719072",
+ "modified": "2023-05-12 11:10:04.779939",
  "modified_by": "Administrator",
  "module": "Inventory Management",
  "name": "Stock Entry",

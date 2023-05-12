@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "SLE-.#####",
  "creation": "2023-05-10 13:04:34.806284",
  "default_view": "List",
  "doctype": "DocType",
@@ -10,11 +11,10 @@
   "item",
   "qty_change",
   "cost",
-  "entry_date",
   "column_break_4qvf",
+  "entry_date",
   "entry_time",
-  "from_warehouse",
-  "to_warehouse"
+  "warehouse"
  ],
  "fields": [
   {
@@ -27,18 +27,6 @@
    "fieldname": "qty_change",
    "fieldtype": "Int",
    "label": "Qty Change"
-  },
-  {
-   "fieldname": "from_warehouse",
-   "fieldtype": "Link",
-   "label": "From Warehouse",
-   "options": "Warehouse"
-  },
-  {
-   "fieldname": "to_warehouse",
-   "fieldtype": "Link",
-   "label": "To Warehouse",
-   "options": "Warehouse"
   },
   {
    "fieldname": "cost",
@@ -58,15 +46,22 @@
    "fieldname": "entry_time",
    "fieldtype": "Time",
    "label": "Entry Time"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-11 11:26:36.569602",
+ "modified": "2023-05-12 11:45:48.173885",
  "modified_by": "Administrator",
  "module": "Inventory Management",
  "name": "Stock Ledger Entry",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

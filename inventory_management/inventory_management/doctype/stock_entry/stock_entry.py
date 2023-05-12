@@ -34,45 +34,59 @@ class StockEntry(Document):
 
     def validate_available_quantity(self, entry_item):
         available_qty = frappe.db.sql(
-            f"SELECT sum(qty_change) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item}' AND (from_warehouse='{entry_item.from_warehouse}' OR to_warehouse='{entry_item.from_warehouse}')"
+            f"SELECT sum(qty_change) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item}' AND warehouse='{entry_item.from_warehouse}'"
         )
-        if available_qty[0][0] and available_qty[0][0]< entry_item.quantity:
+        if available_qty[0][0]< entry_item.quantity:
             frappe.throw(
                 _(f"Quantity exceeds number of units available for {entry_item.item} in the inventory.")
             )
 
     def on_submit(self):
-        for entry_item in self.items:
-            sle = frappe.new_doc("Stock Ledger Entry")
-            self.set_sle_params(sle, entry_item)
-            sle.insert()
-
+        if self.entry_type == 'Transfer':
+            for entry_item in self.items:
+                self.make_transfer_entries(entry_item)
+        else:
+            for entry_item in self.items:
+                warehouse = entry_item.from_warehouse if self.entry_type == 'Consume' else entry_item.to_warehouse
+                self.make_sle_entry(entry_item, warehouse, self.entry_type)
+            
+    def make_transfer_entries(self, entry_item):
+        entry_type = 'Consume'
+        sle = self.make_sle_entry(entry_item, entry_item.from_warehouse, entry_type)
+        entry_item.value = sle.cost
+        entry_type = 'Receive'
+        self.make_sle_entry(entry_item, entry_item.to_warehouse, entry_type)
+       
     def on_cancel(self):
-        for entry_item in self.items:
-            sle = frappe.new_doc("Stock Ledger Entry")
-            self.set_sle_params_on_cancel(sle, entry_item)
-            sle.insert()
-
-    def set_sle_params(self, sle, entry_item):
-        sle.from_warehouse = entry_item.from_warehouse
-        sle.to_warehouse = entry_item.to_warehouse
-        sle.qty_change = entry_item.quantity if self.entry_type == 'Receive' else -(entry_item.quantity)
-        self.set_item_details(sle, entry_item)
-
-    def set_sle_params_on_cancel(self, sle, entry_item):
-        sle.from_warehouse = entry_item.to_warehouse
-        sle.to_warehouse = entry_item.from_warehouse
-        sle.qty_change = -(entry_item.quantity) if self.entry_type == 'Receive' else entry_item.quantity
-        self.set_item_details(sle, entry_item)
-
-    def set_item_details(self, sle, entry_item):
+        if self.entry_type == 'Transfer':
+            for entry_item in self.items:
+                self.make_rev_transfer_entries(entry_item)
+        else:
+            for entry_item in self.items:
+                warehouse = entry_item.from_warehouse if self.entry_type == 'Consume' else entry_item.to_warehouse
+                self.make_sle_entry(entry_item, warehouse, self.entry_type)
+                
+    def make_rev_transfer_entries(self, entry_item):
+        entry_type = 'Consume'
+        sle = self.make_sle_entry(entry_item, entry_item.to_warehouse, entry_type)
+        entry_item.value = sle.cost
+        entry_type = 'Receive'
+        self.make_sle_entry(entry_item, entry_item.from_warehouse, entry_type)
+        
+    def make_sle_entry(self, entry_item, warehouse, entry_type):
+        sle = frappe.new_doc("Stock Ledger Entry")
         sle.item = entry_item.item
         sle.entry_date = self.entry_date
         sle.entry_time = self.entry_time
-        if self.entry_type != 'Receive':
-            sle.cost = self.calculate_moving_average(entry_item)
-        else:
+        sle.warehouse = warehouse
+        if entry_type == 'Receive':
+            sle.qty_change = entry_item.quantity
             sle.cost = entry_item.value
+        else:
+            sle.qty_change = -(entry_item.quantity)
+            sle.cost = self.calculate_moving_average(entry_item)
+        sle.insert()
+        return sle 
 
     def calculate_moving_average(self, entry_item):
         moving_avg_rate = frappe.db.sql(
