@@ -8,6 +8,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "voucher_name",
   "item",
   "qty_change",
   "cost",
@@ -52,12 +53,19 @@
    "fieldtype": "Link",
    "label": "Warehouse",
    "options": "Warehouse"
+  },
+  {
+   "fieldname": "voucher_name",
+   "fieldtype": "Link",
+   "label": "Voucher Name",
+   "options": "Stock Entry",
+   "read_only": 1
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-12 13:07:40.626086",
+ "modified": "2023-05-16 15:52:20.326909",
  "modified_by": "Administrator",
  "module": "Inventory Management",
  "name": "Stock Ledger Entry",

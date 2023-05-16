@@ -54,6 +54,7 @@ class TestStockEntry(FrappeTestCase):
         self.item2 = create_item("Test Item 2")
         self.warehouse = create_warehouse("Test Warehouse", is_group=0)
 
+
     def test_create_receive_entry(self):
         items = [
             (self.item1, self.warehouse, 10, 5.00),
@@ -74,6 +75,7 @@ class TestStockEntry(FrappeTestCase):
         self.assertEqual(sle.qty_change, 20)
         self.assertEqual(sle.cost, 10.00)
 
+
     def test_cancel_receive_entry(self):
         items = [
             (self.item1, self.warehouse, 10, 5.00),
@@ -81,8 +83,7 @@ class TestStockEntry(FrappeTestCase):
         ]
         self.receive_entry = create_entry("Test Entry", "Receive", items)
         stock_entry = frappe.get_doc("Stock Entry", self.receive_entry)
-        stock_entry.docstatus = 2
-        stock_entry.save()
+        stock_entry.cancel()
         sle = frappe.get_last_doc(
             "Stock Ledger Entry",
             filters={"item": self.item1, "warehouse": self.warehouse}
@@ -96,6 +97,7 @@ class TestStockEntry(FrappeTestCase):
         self.assertEqual(sle.qty_change, -20)
         self.assertEqual(sle.cost, 10.00)
     
+
     def test_create_consume_entry(self):
         items = [
             (self.item1, self.warehouse, 10, 5.00),

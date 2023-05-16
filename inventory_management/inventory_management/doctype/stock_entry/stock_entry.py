@@ -75,6 +75,7 @@ class StockEntry(Document):
         
     def make_sle_entry(self, entry_item, warehouse, entry_type):
         sle = frappe.new_doc("Stock Ledger Entry")
+        sle.voucher_name = self.name
         sle.item = entry_item.item
         sle.entry_date = self.entry_date
         sle.entry_time = self.entry_time
