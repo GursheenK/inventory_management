@@ -85,7 +85,7 @@ class StockEntry(Document):
             sle.cost = entry_item.value
         else:
             sle.qty_change = -(entry_item.quantity)
-            if self.entry_type in ['Transfer', 'Receive']:
+            if self.entry_type is 'Receive':
                 sle.cost = entry_item.value
             else:
                 sle.cost = self.calculate_moving_average(entry_item)

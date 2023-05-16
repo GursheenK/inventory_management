@@ -13,6 +13,13 @@ def execute(filters=None):
 def get_columns():
     columns = [
         {
+            "label": _("Voucher"),
+            "fieldname": "voucher_name",
+            "fieldtype": "Link",
+            "options": "Stock Entry",
+            "width": 150,
+        },
+        {
             "label": _("Date"),
             "fieldname": "entry_date",
             "fieldtype": "Date",
@@ -78,6 +85,7 @@ def get_ledger_entries(filters):
     
     query = (frappe.qb.from_(sle)
     		.select(
+                sle.voucher_name,
         		sle.entry_date,
                 sle.item,
                 sle.qty_change,
@@ -95,6 +103,8 @@ def get_ledger_entries(filters):
     return results
 
 def apply_filters(filters, sle, query):
+    if "voucher_name" in filters and filters["voucher_name"]:
+        query = query.where(sle.voucher_name == filters["voucher_name"])
     if "item" in filters and filters["item"]:
         query = query.where(sle.item == filters["item"])
     if "entry_date" in filters and filters["entry_date"]:
