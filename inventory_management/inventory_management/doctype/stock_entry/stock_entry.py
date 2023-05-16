@@ -63,8 +63,8 @@ class StockEntry(Document):
                 self.make_rev_transfer_entries(entry_item)
         else:
             for entry_item in self.items:
-                warehouse = entry_item.from_warehouse if self.entry_type == 'Consume' else entry_item.to_warehouse
-                self.make_sle_entry(entry_item, warehouse, self.entry_type)
+                warehouse, entry_type = (entry_item.from_warehouse, 'Receive') if self.entry_type == 'Consume' else (entry_item.to_warehouse, 'Consume')
+                self.make_sle_entry(entry_item, warehouse, entry_type)
                 
     def make_rev_transfer_entries(self, entry_item):
         entry_type = 'Consume'
@@ -84,7 +84,10 @@ class StockEntry(Document):
             sle.cost = entry_item.value
         else:
             sle.qty_change = -(entry_item.quantity)
-            sle.cost = self.calculate_moving_average(entry_item)
+            if self.entry_type in ['Transfer', 'Receive']:
+                sle.cost = entry_item.value
+            else:
+                sle.cost = self.calculate_moving_average(entry_item)
         sle.insert()
         return sle 
 
