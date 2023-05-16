@@ -1,0 +1,85 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"Sq-NjqgHcQ\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h2\\\">Stock Management</span>\",\"col\":12}},{\"id\":\"47BWpjvKWK\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"4bZ-2uLWFj\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Doctypes</b></span>\",\"col\":12}},{\"id\":\"df53mZeOJY\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":6}},{\"id\":\"kJApI1nvLK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Warehouse\",\"col\":6}},{\"id\":\"pMpw3X25mV\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Stock Entry\",\"col\":6}},{\"id\":\"-5RRiH4K4u\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Stock Ledger Entry\",\"col\":6}},{\"id\":\"ePHNapB4pd\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"sSdRI_M3-C\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":6}}]",
+ "creation": "2023-05-16 08:20:54.732320",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "stock",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Stock Management",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Ledger",
+   "link_count": 0,
+   "link_to": "Stock Ledger",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Balance",
+   "link_count": 0,
+   "link_to": "Stock Balance",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2023-05-16 08:45:04.799320",
+ "modified_by": "Administrator",
+ "module": "Inventory Management",
+ "name": "Stock Management",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Warehouse",
+   "link_to": "Warehouse",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Stock Entry",
+   "link_to": "Stock Entry",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Item",
+   "link_to": "Item",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Stock Ledger Entry",
+   "link_to": "Stock Ledger Entry",
+   "type": "DocType"
+  }
+ ],
+ "title": "Stock Management"
+}

@@ -30,7 +30,7 @@ def create_receive_entry(entry_name, items, warehouse):
                             "quantity": 20,
                             "value": 10.00,
                         },
-                    ],
+                    ]
                 }
             )
             .insert()
@@ -75,8 +75,18 @@ class TestStockEntry(FrappeTestCase):
                 }
             )
         )
-        # self.assertEqual(sle.qty_change, 10)
-        # self.assertEqual(sle.cost, 5.00)
+        self.assertTrue(
+            frappe.db.exists(
+                "Stock Ledger Entry",
+                {
+                    "item": self.item2,
+                    "warehouse": self.warehouse,
+                    "qty_change": 20,
+                    "cost": 10.00,
+                }
+            )
+        )
+        
 
     # def test_create_consume_entry(self, item, warehouse):
     # 	crea

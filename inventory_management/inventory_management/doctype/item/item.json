@@ -13,6 +13,7 @@
   "brand",
   "column_break_lqal",
   "item_code",
+  "section_break_h2yz",
   "description"
  ],
  "fields": [
@@ -49,14 +50,18 @@
   },
   {
    "fieldname": "description",
-   "fieldtype": "Data",
+   "fieldtype": "Text Editor",
    "label": "Description"
+  },
+  {
+   "fieldname": "section_break_h2yz",
+   "fieldtype": "Section Break"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-11 08:45:42.076676",
+ "modified": "2023-05-16 08:52:22.495491",
  "modified_by": "Administrator",
  "module": "Inventory Management",
  "name": "Item",
