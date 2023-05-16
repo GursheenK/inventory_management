@@ -7,6 +7,9 @@ app_description = "Inventory Management System"
 app_email = "gursheen@frappe.io"
 app_license = "MIT"
 
+treeviews = [
+    "Warehouse"
+]
 # Includes in <head>
 # ------------------
 

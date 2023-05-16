@@ -29,19 +29,19 @@ def create_entry(entry_name, entry_type, items):
 
 def create_entry_items(entry_type, items):
     entry_items = []
-    for item in items:
+    for entryitem in items:
         i = frappe._dict(
-            item=item[0],
-            quantity=item[2],
-            value=item[3],
+            item=entryitem[0],
+            quantity=entryitem[2],
+            value=entryitem[3],
         )
         if entry_type is "Receive":
-            i["to_warehouse"] = item[1]
+            i["to_warehouse"] = entryitem[1]
         elif entry_type is "Consume":
-            i["from_warehouse"] = item[1]
+            i["from_warehouse"] = entryitem[1]
         else:
-            i["from_warehouse"] = item[1][0]
-            i["to_warehouse"] = item[1][1]
+            i["from_warehouse"] = entryitem[1][0]
+            i["to_warehouse"] = entryitem[1][1]
         entry_items.append(i)
     return entry_items
 
@@ -211,3 +211,37 @@ class TestStockEntry(FrappeTestCase):
         )
         self.assertEqual(qty_change, 3)
         self.assertEqual(cost, 10.00)
+
+    def test_cancel_transfer_entry(self):
+        create_entry(
+            "Receive Entry", "Receive", [(self.item1, self.warehouse1, 10, 5.00)]
+        )
+        self.transfer_entry = create_entry(
+            "Transfer Entry",
+            "Transfer",
+            [(self.item1, (self.warehouse1, self.warehouse2), 3, 5.00)],
+        )
+        stock_entry = frappe.get_doc("Stock Entry", self.transfer_entry)
+        stock_entry.cancel()
+        qty_change, cost = frappe.db.get_value(
+            "Stock Ledger Entry",
+            {
+                "voucher_name": self.transfer_entry,
+                "item": self.item1,
+                "warehouse": self.warehouse1,
+            },
+            ["qty_change", "cost"],
+        )
+        self.assertEqual(qty_change, 3)
+        self.assertEqual(cost, 5.00)
+        qty_change, cost = frappe.db.get_value(
+            "Stock Ledger Entry",
+            {
+                "voucher_name": self.transfer_entry,
+                "item": self.item1,
+                "warehouse": self.warehouse2,
+            },
+            ["qty_change", "cost"],
+        )
+        self.assertEqual(qty_change, -3)
+        self.assertEqual(cost, 5.00)
