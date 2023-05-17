@@ -59,11 +59,22 @@ def get_data(filters):
     
     results = query.run(as_dict=True, debug=True)
     for entry_item in results:
-        doc = frappe.get_last_doc(
-            "Stock Ledger Entry", filters={"item": entry_item.item}
-        )
-        entry_item["item_value"] = doc.cost
-        entry_item["balance_value"] = entry_item["balance_qty"] * doc.cost
+        sle = frappe.qb.DocType("Stock Ledger Entry")
+    
+        query = (frappe.qb.from_(sle)
+            .select(
+                fn.Sum(sle.qty_change).as_("available_qty"),
+                fn.Sum(sle.qty_change * sle.cost).as_("curr_value")
+            )
+            .where(sle.docstatus < 2)
+            .where(sle.item == entry_item["item"])
+            )
+        query = apply_filters(filters, sle, query)
+        
+        itemResults = query.run(as_dict=True, debug=True)
+        curr_value = itemResults[0]["curr_value"]/itemResults[0]["available_qty"]
+        entry_item["item_value"] = curr_value
+        entry_item["balance_value"] = entry_item["balance_qty"] * curr_value
     return results
 
 def apply_filters(filters, sle, query):
