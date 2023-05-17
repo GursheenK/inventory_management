@@ -10,6 +10,7 @@ app_license = "MIT"
 treeviews = [
     "Warehouse"
 ]
+
 # Includes in <head>
 # ------------------
 

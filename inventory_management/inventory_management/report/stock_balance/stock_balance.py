@@ -78,6 +78,10 @@ def get_data(filters):
     return results
 
 def apply_filters(filters, sle, query):
+    if "item" in filters and filters["item"]:
+        query = query.where(sle.item == filters["item"])
+    if "warehouse" in filters and filters["warehouse"]:
+        query = query.where(sle.warehouse == filters["warehouse"])
     if "to_date" in filters and filters["to_date"]:
         to_date = filters["to_date"]
     else:

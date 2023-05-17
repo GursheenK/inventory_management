@@ -49,6 +49,7 @@ class StockEntry(Document):
             for entry_item in self.items:
                 warehouse = entry_item.from_warehouse if self.entry_type == 'Consume' else entry_item.to_warehouse
                 self.make_sle_entry(entry_item, warehouse, self.entry_type)
+        #frappe.show_alert('Entry Created', 5)
             
     def make_transfer_entries(self, entry_item):
         entry_type = 'Consume'
@@ -81,8 +82,7 @@ class StockEntry(Document):
         sle.entry_time = self.entry_time
         sle.warehouse = warehouse
         if entry_type == 'Receive':
-            sle.qty_change = entry_item.quantity
-            sle.cost = entry_item.value
+            sle.qty_change, sle.cost = entry_item.quantity, entry_item.value
         else:
             sle.qty_change = -(entry_item.quantity)
             if self.entry_type is 'Receive':

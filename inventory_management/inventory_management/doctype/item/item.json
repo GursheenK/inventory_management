@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_guest_to_view": 1,
  "allow_rename": 1,
  "autoname": "ITEM-.#####",
  "creation": "2023-05-08 11:31:44.889288",
@@ -61,7 +62,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-16 08:52:22.495491",
+ "modified": "2023-05-17 16:35:01.231700",
  "modified_by": "Administrator",
  "module": "Inventory Management",
  "name": "Item",
