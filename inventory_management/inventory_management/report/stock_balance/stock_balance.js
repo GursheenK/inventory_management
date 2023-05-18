@@ -5,13 +5,8 @@
 frappe.query_reports["Stock Balance"] = {
 	"filters": [
 		{
-			"fieldname": "from_date",
-			"label": __("From Date"),
-			"fieldtype": "Date"
-		},
-		{
-			"fieldname": "to_date",
-			"label": __("To Date"),
+			"fieldname": "on_date",
+			"label": __("As On Date"),
 			"fieldtype": "Date"
 		},
 		{

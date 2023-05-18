@@ -4,7 +4,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-
+from pypika import functions as fn
 
 class StockEntry(Document):
     def validate(self):
@@ -88,12 +88,21 @@ class StockEntry(Document):
             if self.entry_type is 'Receive':
                 sle.cost = entry_item.value
             else:
-                sle.cost = self.calculate_moving_average(entry_item)
+                sle.cost = self.calculate_moving_average(entry_item, sle.warehouse)
         sle.insert()
         return sle 
 
-    def calculate_moving_average(self, entry_item):
-        moving_avg_rate = frappe.db.sql(
-            f"SELECT IFNULL(SUM(qty_change*cost)/sum(qty_change), 0) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item}'"
+    def calculate_moving_average(self, entry_item, warehouse):
+        sle = frappe.qb.DocType("Stock Ledger Entry")
+    
+        query = (frappe.qb.from_(sle)
+            .select(
+                fn.Sum(sle.qty_change * sle.cost).as_("value_change"),
+                fn.Sum(sle.qty_change).as_("available_qty")
+            )
+            .where(sle.item == entry_item.item)
+            .where(sle.warehouse == warehouse)
         )
-        return moving_avg_rate[0][0]
+        results = query.run(as_dict=True)
+        moving_avg = results[0]["value_change"]/results[0]["available_qty"]
+        return moving_avg

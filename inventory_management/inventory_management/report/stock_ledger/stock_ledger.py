@@ -3,7 +3,7 @@
 
 import frappe
 from frappe import _
-
+from pypika import functions as fn
 
 def execute(filters=None):
     columns = get_columns()
@@ -17,12 +17,19 @@ def get_columns():
             "fieldname": "voucher_name",
             "fieldtype": "Link",
             "options": "Stock Entry",
-            "width": 150,
+            "width": 100,
         },
         {
             "label": _("Date"),
             "fieldname": "entry_date",
             "fieldtype": "Date",
+            "width": 100,
+        },
+        {
+            "label": _("Warehouse"),
+            "fieldname": "warehouse",
+            "fieldtype": "Link",
+            "options": "Warehouse",
             "width": 150,
         },
         {
@@ -36,11 +43,17 @@ def get_columns():
             "label": _("Qty Change"),
             "fieldname": "qty_change",
             "fieldtype": "Int",
-            "width": 150,
+            "width": 100,
         },
         {
             "label": _("Cost"),
             "fieldname": "cost",
+            "fieldtype": "Float",
+            "width": 100,
+        },
+        {
+            "label": _("Valuation Rate"),
+            "fieldname": "valuation_rate",
             "fieldtype": "Float",
             "width": 150,
         },
@@ -55,29 +68,29 @@ def get_columns():
             "fieldtype": "Int",
             "fieldname":"available_qty",
             "width": 150,
-        },
-        {
-            "label": _("Warehouse"),
-            "fieldname": "warehouse",
-            "fieldtype": "Link",
-            "options": "Warehouse",
-            "width": 200,
         }
     ]
     return columns
 
 def get_data(filters):
     ledger_entries = get_ledger_entries(filters)
-    available_qty = {}
     for ledger_entry in ledger_entries:
-        item = ledger_entry["item"]
-        qty_change = ledger_entry["qty_change"]
-        if item in available_qty:
-            ledger_entry["available_qty"] = available_qty[item] + qty_change
-            available_qty[item] += qty_change
-        else:
-            ledger_entry["available_qty"] = qty_change
-            available_qty[item] = qty_change
+        sle = frappe.qb.DocType("Stock Ledger Entry")
+    
+        query = (
+            frappe.qb.from_(sle)
+            .select(
+                fn.Sum(sle.qty_change).as_("available_qty"),
+                fn.Sum(sle.qty_change * sle.cost).as_("total_value")
+            )
+            .where(sle.item == ledger_entry["item"])
+            .where(sle.warehouse == ledger_entry["warehouse"])
+            .where(sle.creation <= ledger_entry["creation"])
+        )
+        
+        results = query.run(as_dict=True)
+        ledger_entry["available_qty"] = results[0]["available_qty"]
+        ledger_entry["valuation_rate"] = results[0]["total_value"]/results[0]["available_qty"]
     return ledger_entries
 
 def get_ledger_entries(filters):
@@ -99,7 +112,7 @@ def get_ledger_entries(filters):
             )
     query = apply_filters(filters, sle, query)
     
-    results = query.run(as_dict=True, debug=True)
+    results = query.run(as_dict=True)
     return results
 
 def apply_filters(filters, sle, query):

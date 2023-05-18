@@ -44,6 +44,28 @@ def get_columns():
 
 
 def get_data(filters):
+    results = get_ledger_entries(filters)
+    for entry_item in results:
+        sle = frappe.qb.DocType("Stock Ledger Entry")
+    
+        query = (frappe.qb.from_(sle)
+            .select(
+                fn.Sum(sle.qty_change).as_("available_qty"),
+                fn.Sum(sle.qty_change * sle.cost).as_("curr_value")
+            )
+            .where(sle.item == entry_item["item"])
+            .where(sle.warehouse == entry_item["warehouse"])
+            )
+        query = apply_filters(filters, sle, query)
+        
+        itemResults = query.run(as_dict=True, debug=True)
+        curr_value = itemResults[0]["curr_value"]/itemResults[0]["available_qty"]
+        entry_item["item_value"] = round(curr_value, 3)
+        entry_item["balance_value"] = round(entry_item["balance_qty"] * curr_value, 3)
+    return results
+
+
+def get_ledger_entries(filters):
     sle = frappe.qb.DocType("Stock Ledger Entry")
     
     query = (frappe.qb.from_(sle)
@@ -57,24 +79,7 @@ def get_data(filters):
         )
     query = apply_filters(filters, sle, query)
     
-    results = query.run(as_dict=True, debug=True)
-    for entry_item in results:
-        sle = frappe.qb.DocType("Stock Ledger Entry")
-    
-        query = (frappe.qb.from_(sle)
-            .select(
-                fn.Sum(sle.qty_change).as_("available_qty"),
-                fn.Sum(sle.qty_change * sle.cost).as_("curr_value")
-            )
-            .where(sle.docstatus < 2)
-            .where(sle.item == entry_item["item"])
-            )
-        query = apply_filters(filters, sle, query)
-        
-        itemResults = query.run(as_dict=True, debug=True)
-        curr_value = itemResults[0]["curr_value"]/itemResults[0]["available_qty"]
-        entry_item["item_value"] = curr_value
-        entry_item["balance_value"] = entry_item["balance_qty"] * curr_value
+    results = query.run(as_dict=True)
     return results
 
 def apply_filters(filters, sle, query):
@@ -82,11 +87,6 @@ def apply_filters(filters, sle, query):
         query = query.where(sle.item == filters["item"])
     if "warehouse" in filters and filters["warehouse"]:
         query = query.where(sle.warehouse == filters["warehouse"])
-    if "to_date" in filters and filters["to_date"]:
-        to_date = filters["to_date"]
-    else:
-        to_date = frappe.utils.today()
-    query = query.where(sle.entry_date <= to_date)
-    if "from_date" in filters and filters["from_date"]:
-        query = query.where(sle.entry_date >= filters["from_date"])
+    if "on_date" in filters and filters["on_date"]:
+        query = query.where(sle.entry_date <= filters["on_date"])
     return query

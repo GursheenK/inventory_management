@@ -12,6 +12,7 @@
   "entry_date",
   "column_break_wvac",
   "entry_time",
+  "valuation_method",
   "section_break_vpzt",
   "items",
   "amended_from"
@@ -62,13 +63,19 @@
    "label": "Entry Type",
    "options": "Receive\nConsume\nTransfer",
    "reqd": 1
+  },
+  {
+   "fieldname": "valuation_method",
+   "fieldtype": "Select",
+   "label": "Valuation Method",
+   "options": "FIFO\nMoving Average"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-16 09:01:43.465759",
+ "modified": "2023-05-18 12:34:56.740355",
  "modified_by": "Administrator",
  "module": "Inventory Management",
  "name": "Stock Entry",

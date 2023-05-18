@@ -41,24 +41,37 @@ class TestStockLedger(FrappeTestCase):
 
     def test_stock_ledger_receive(self):
         filters = { "voucher_name": self.receive_entry }
-        results = execute(filters)[1]
-        self.assertEqual(results[0]["value"], 50)
-        self.assertEqual(results[1]["value"], 200)
+        columns, data = execute(filters)
+        self.assertEqual(data[0]["value"], 50)
+        self.assertEqual(data[0]["valuation_rate"], 5)
+        self.assertEqual(data[0]["available_qty"], 10)
+       
+        self.assertEqual(data[1]["value"], 200)
+        self.assertEqual(data[1]["valuation_rate"], 10)
+        self.assertEqual(data[1]["available_qty"], 20)
+        
 
 
     def test_stock_ledger_consume(self):
         filters = { "voucher_name": self.consume_entry }
-        results = execute(filters)[1]
-        self.assertEqual(results[0]["value"], -25)
-        self.assertEqual(results[1]["value"], -50)
+        columns, data = execute(filters)
+        self.assertEqual(data[0]["value"], -25)
+        self.assertEqual(data[0]["valuation_rate"], 5)
+        self.assertEqual(data[0]["available_qty"], 5)
+       
+        self.assertEqual(data[1]["value"], -50)
+        self.assertEqual(data[1]["valuation_rate"], 10)
+        self.assertEqual(data[1]["available_qty"], 15)
+
 
 
     def test_stock_ledger_transfer(self):
         filters = { "voucher_name": self.transfer_entry }
-        results = execute(filters)[1]
-
-        self.assertEqual(results[0]["warehouse"], self.warehouse1)
-        self.assertEqual(results[0]["value"], -15)
-
-        self.assertEqual(results[1]["warehouse"], self.warehouse2)
-        self.assertEqual(results[1]["value"], 15)
+        columns, data = execute(filters)
+        self.assertEqual(data[0]["value"], -15)
+        self.assertEqual(data[0]["valuation_rate"], 5)
+        self.assertEqual(data[0]["available_qty"], 2)
+        
+        self.assertEqual(data[1]["value"], 15)
+        self.assertEqual(data[1]["valuation_rate"], 5)
+        self.assertEqual(data[1]["available_qty"], 3)
