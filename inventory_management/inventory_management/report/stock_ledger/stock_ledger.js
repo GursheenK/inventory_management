@@ -21,5 +21,25 @@ frappe.query_reports["Stock Ledger"] = {
 			"fieldtype": "Link",
 			"options": "Warehouse"
 		}
-	]
+	],
+	"formatter": function (value, row, column, data, default_formatter) {
+		value = default_formatter(value, row, column, data);
+		if (column.fieldname == "qty_change" && data){
+			if (data.qty_change < 0) {
+				value = "<span style='color:red'>" + value + "</span>";
+			}
+			else {
+				value = "<span style='color:green'>" + value + "</span>";
+			}
+		}
+		else if (column.fieldname == "value" && data){
+			if (data.value < 0) {
+				value = "<span style='color:red'>" + value + "</span>";
+			}
+			else {
+				value = "<span style='color:green'>" + value + "</span>";
+			}
+		}
+		return value;
+	},
 };
