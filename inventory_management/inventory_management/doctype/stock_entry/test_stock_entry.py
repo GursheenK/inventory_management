@@ -46,6 +46,18 @@ def create_entry_items(entry_type, items):
         entry_items.append(i)
     return entry_items
 
+def get_details(voucher, item, warehouse):
+        qty_change, cost = frappe.db.get_value(
+            "Stock Ledger Entry",
+            {
+                "voucher_name": voucher,
+                "item": item,
+                "warehouse": warehouse,
+            },
+            ["qty_change", "cost"],
+        )
+        return (qty_change, cost)
+
 
 class TestStockEntry(FrappeTestCase):
     def setUp(self):
@@ -61,12 +73,12 @@ class TestStockEntry(FrappeTestCase):
     def test_create_receive_entry(self):
         self.receive_entry = create_entry("Test Entry", "Receive", self.items)
         self.assertTrue(frappe.db.exists("Stock Entry", self.receive_entry))
-        qty_change, cost = self.get_details(
+        qty_change, cost = get_details(
             self.receive_entry, self.item1, self.warehouse1
         )
         self.assertEqual(qty_change, 10)
         self.assertEqual(cost, 5.00)
-        qty_change, cost = self.get_details(
+        qty_change, cost = get_details(
             self.receive_entry, self.item2, self.warehouse1
         )
         self.assertEqual(qty_change, 20)
@@ -76,12 +88,12 @@ class TestStockEntry(FrappeTestCase):
         self.receive_entry = create_entry("Test Entry", "Receive", self.items)
         stock_entry = frappe.get_doc("Stock Entry", self.receive_entry)
         stock_entry.cancel()
-        qty_change, cost = self.get_details(
+        qty_change, cost = get_details(
             self.receive_entry, self.item1, self.warehouse1
         )
         self.assertEqual(qty_change, -10)
         self.assertEqual(cost, 5.00)
-        qty_change, cost = self.get_details(
+        qty_change, cost = get_details(
             self.receive_entry, self.item2, self.warehouse1
         )
         self.assertEqual(qty_change, -20)
@@ -96,12 +108,12 @@ class TestStockEntry(FrappeTestCase):
         create_entry("Receive Entry", "Receive", items)
         self.consume_entry = create_entry("Consume Entry", "Consume", items)
         self.assertTrue(frappe.db.exists("Stock Entry", self.consume_entry))
-        qty_change, cost = self.get_details(
+        qty_change, cost = get_details(
             self.consume_entry, self.item1, self.warehouse1
         )
         self.assertEqual(qty_change, -10)
         self.assertEqual(cost, 7.50)
-        qty_change, cost = self.get_details(
+        qty_change, cost = get_details(
             self.consume_entry, self.item2, self.warehouse1
         )
         self.assertEqual(qty_change, -20)
@@ -112,7 +124,7 @@ class TestStockEntry(FrappeTestCase):
         self.consume_entry = create_entry("Consume Entry", "Consume", self.items)
         stock_entry = frappe.get_doc("Stock Entry", self.consume_entry)
         stock_entry.cancel()
-        qty_change, cost = self.get_details(
+        qty_change, cost = get_details(
             self.consume_entry, self.item1, self.warehouse1
         )
         self.assertEqual(qty_change, 10)
@@ -131,12 +143,12 @@ class TestStockEntry(FrappeTestCase):
             [(self.item1, (self.warehouse1, self.warehouse2), 3, 5.00)],
         )
         self.assertTrue(frappe.db.exists("Stock Entry", self.transfer_entry))
-        qty_change, cost = self.get_details(
+        qty_change, cost = get_details(
             self.transfer_entry, self.item1, self.warehouse1
         )
         self.assertEqual(qty_change, -3)
         self.assertEqual(cost, 10.00)
-        qty_change, cost = self.get_details(
+        qty_change, cost = get_details(
             self.transfer_entry, self.item1, self.warehouse2
         )
         self.assertEqual(qty_change, 3)
@@ -153,25 +165,14 @@ class TestStockEntry(FrappeTestCase):
         )
         stock_entry = frappe.get_doc("Stock Entry", self.transfer_entry)
         stock_entry.cancel()
-        qty_change, cost = self.get_details(
+        qty_change, cost = get_details(
             self.transfer_entry, self.item1, self.warehouse1
         )
         self.assertEqual(qty_change, 3)
         self.assertEqual(cost, 5.00)
-        qty_change, cost = self.get_details(
+        qty_change, cost = get_details(
             self.transfer_entry, self.item1, self.warehouse2
         )
         self.assertEqual(qty_change, -3)
         self.assertEqual(cost, 5.00)
 
-    def get_details(self, voucher, item, warehouse):
-        qty_change, cost = frappe.db.get_value(
-            "Stock Ledger Entry",
-            {
-                "voucher_name": voucher,
-                "item": item,
-                "warehouse": warehouse,
-            },
-            ["qty_change", "cost"],
-        )
-        return (qty_change, cost)

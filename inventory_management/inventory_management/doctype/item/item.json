@@ -15,7 +15,12 @@
   "column_break_lqal",
   "item_code",
   "section_break_h2yz",
-  "description"
+  "description",
+  "section_break_81vy",
+  "opening_stock",
+  "opening_valuation_rate",
+  "column_break_bc21",
+  "opening_stock_warehouse"
  ],
  "fields": [
   {
@@ -57,12 +62,36 @@
   {
    "fieldname": "section_break_h2yz",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_81vy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "opening_stock",
+   "fieldtype": "Int",
+   "label": "Opening Stock"
+  },
+  {
+   "fieldname": "opening_valuation_rate",
+   "fieldtype": "Float",
+   "label": "Opening Valuation Rate"
+  },
+  {
+   "fieldname": "column_break_bc21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "opening_stock_warehouse",
+   "fieldtype": "Link",
+   "label": "Opening Stock Warehouse",
+   "options": "Warehouse"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-17 16:35:01.231700",
+ "modified": "2023-05-18 16:45:35.962245",
  "modified_by": "Administrator",
  "module": "Inventory Management",
  "name": "Item",

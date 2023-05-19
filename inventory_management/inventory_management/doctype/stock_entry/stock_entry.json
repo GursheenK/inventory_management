@@ -10,9 +10,10 @@
  "field_order": [
   "entry_type",
   "entry_date",
-  "column_break_wvac",
   "entry_time",
+  "column_break_wvac",
   "valuation_method",
+  "purpose",
   "section_break_vpzt",
   "items",
   "amended_from"
@@ -69,13 +70,20 @@
    "fieldtype": "Select",
    "label": "Valuation Method",
    "options": "FIFO\nMoving Average"
+  },
+  {
+   "default": "Regular",
+   "fieldname": "purpose",
+   "fieldtype": "Select",
+   "label": "Purpose",
+   "options": "Regular\nOpening"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-05-18 12:34:56.740355",
+ "modified": "2023-05-18 17:39:46.141702",
  "modified_by": "Administrator",
  "module": "Inventory Management",
  "name": "Stock Entry",

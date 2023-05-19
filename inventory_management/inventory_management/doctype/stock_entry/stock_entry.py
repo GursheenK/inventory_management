@@ -33,10 +33,12 @@ class StockEntry(Document):
             frappe.throw(_("Value of Item must be set."))
 
     def validate_available_quantity(self, entry_item):
-        available_qty = frappe.db.sql(
-            f"SELECT IFNULL(SUM(qty_change), 0) FROM `tabStock Ledger Entry` WHERE item='{entry_item.item}' AND warehouse='{entry_item.from_warehouse}'"
-        )
-        if available_qty[0][0]< entry_item.quantity:
+        qty = frappe.db.get_values("Stock Ledger Entry", {
+            "item": entry_item.item,
+            "warehouse": entry_item.from_warehouse
+        }, ["qty_change"])
+        available_qty = sum([q[0] for q in qty])
+        if available_qty < entry_item.quantity:
             frappe.throw(
                 _(f"Quantity exceeds number of units available for {entry_item.item} in the inventory.")
             )
@@ -49,7 +51,6 @@ class StockEntry(Document):
             for entry_item in self.items:
                 warehouse = entry_item.from_warehouse if self.entry_type == 'Consume' else entry_item.to_warehouse
                 self.make_sle_entry(entry_item, warehouse, self.entry_type)
-        #frappe.show_alert('Entry Created', 5)
             
     def make_transfer_entries(self, entry_item):
         entry_type = 'Consume'
