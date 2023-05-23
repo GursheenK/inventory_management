@@ -20,7 +20,8 @@
   "opening_stock",
   "opening_valuation_rate",
   "column_break_bc21",
-  "opening_stock_warehouse"
+  "opening_stock_warehouse",
+  "default_warehouse"
  ],
  "fields": [
   {
@@ -86,12 +87,18 @@
    "fieldtype": "Link",
    "label": "Opening Stock Warehouse",
    "options": "Warehouse"
+  },
+  {
+   "fieldname": "default_warehouse",
+   "fieldtype": "Link",
+   "label": "Default Warehouse",
+   "options": "Warehouse"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-18 16:45:35.962245",
+ "modified": "2023-05-23 11:30:47.700125",
  "modified_by": "Administrator",
  "module": "Inventory Management",
  "name": "Item",
